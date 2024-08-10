@@ -209,6 +209,20 @@ app.post('/profile', authenticateToken, upload.single('profilePic'), async (req,
   }
 });
 
+
+app.get('/profile', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.user.email });
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching profile', error });
+  }
+});
+
 // Get slots for a specific location
 app.get('/slots/:location', authenticateToken, async (req, res) => {
   const { location } = req.params;
