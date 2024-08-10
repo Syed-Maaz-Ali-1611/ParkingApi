@@ -92,7 +92,6 @@ const isPasswordValid = (password) => {
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadPath = path.join(__dirname, 'uploads');
-    console.log('Upload Path:', uploadPath); // Log the upload path
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
@@ -100,9 +99,8 @@ const storage = multer.diskStorage({
   }
 });
 
-
-
 const upload = multer({ storage: storage });
+
 
 app.post('/register', async (req, res) => {
   const { name, email, password } = req.body;
