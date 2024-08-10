@@ -92,14 +92,18 @@ const isPasswordValid = (password) => {
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const uploadPath = path.join(__dirname, 'uploads');
+    console.log('Upload Path:', uploadPath); // Log the upload path
     cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    const filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname);
+    console.log('Uploading File:', filename); // Log the filename
+    cb(null, filename);
   }
 });
 
 const upload = multer({ storage: storage });
+
 
 
 app.post('/register', async (req, res) => {
@@ -183,7 +187,7 @@ app.post('/profile', authenticateToken, upload.single('profilePic'), async (req,
   const { name, age, vehicle, model, licensePlate, owner } = req.body;
   const profilePic = req.file ? req.file.path : null;
 
-  console.log('Updating profile:', {
+  console.log('Received Profile Update Request:', {
     name, age, vehicle, model, licensePlate, owner, profilePic
   });
 
@@ -195,6 +199,7 @@ app.post('/profile', authenticateToken, upload.single('profilePic'), async (req,
     );
 
     if (!user) {
+      console.log('User not found');
       return res.status(400).json({ message: 'User not found' });
     }
 
@@ -206,6 +211,7 @@ app.post('/profile', authenticateToken, upload.single('profilePic'), async (req,
     res.status(500).json({ message: 'Error updating profile', error });
   }
 });
+
 
 
 app.get('/profile', authenticateToken, async (req, res) => {
